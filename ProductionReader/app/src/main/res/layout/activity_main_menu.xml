@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cesantoni.produccion.productionreader.MainMenu">
+
+    <Button
+        android:id="@+id/scan_button_p"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Escaner personalizado"
+        android:onClick="escanearPer"/>
+    <Button
+        android:id="@+id/btn_registro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_registro"
+        android:onClick="mostrarRegistro"/>
+    <Button
+        android:id="@+id/btn_registro_ti"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_registro_ti"
+        android:onClick="mostrarRegistro_ti"/>
+
+</LinearLayout>

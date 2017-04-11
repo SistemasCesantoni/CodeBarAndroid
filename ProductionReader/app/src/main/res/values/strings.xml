@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ProductionReader</string>
+    <string name="btn_escaner">Escanear</string>
+    <string name="btn_registro">Ver Registro</string>
+    <string name="btn_registro_ti">Ver Registro TI</string>
+
+    <string name="scan_barcode">Escaner Codigo</string>
+    <string name="turn_on_flashlight">Encender Flash</string>
+    <string name="turn_off_flashlight">Apagar Flash</string>
+    <string name="zxing_button_cancel">Cancel</string>
+    <string name="zxing_button_resume">Continuar</string>
+    <string name="zxing_button_pause">Pausar</string>
+
+
+    <string name="cant_cajas">Cantidad Cajas</string>
+    <string name="btn_guardar_cajas">Guardar</string>
+    <string name="btn_cancelar_cajas">Cancelar</string>
+
+</resources>
