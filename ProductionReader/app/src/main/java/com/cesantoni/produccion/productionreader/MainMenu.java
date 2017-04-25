@@ -20,7 +20,6 @@ import java.util.HashMap;
 public class MainMenu extends AppCompatActivity {
 
     private String codigoInterno = "";   //codigo interno
-    private String lote = "";           //lote tarima
     private String codigoExt = "";         //codigo externo
     private int codeType;
 
@@ -37,8 +36,6 @@ public class MainMenu extends AppCompatActivity {
         Utilities u = new Utilities();
         presentaciones = u.cargarPresentaciones();
 
-
-
         //Obtener los datos enviados por el escaner
         Intent intent = this.getIntent();
         //verificar si el intent viene del escaner
@@ -49,7 +46,7 @@ public class MainMenu extends AppCompatActivity {
             if(b != null) {
                 codigoInterno = b.getString("codigoInterno");
                 codeType = b.getInt("codeType");
-                lote = b.getString("lote");
+                String lote = b.getString("lote");
                 String fecha = u.getFecha();
                 //verificar si la tarima esta completa
                 //1 si esta completa

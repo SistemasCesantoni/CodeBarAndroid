@@ -91,7 +91,7 @@ public class Utilities {
      */
     private boolean verificarArchivo(File file) {
         FileReader fr = null;
-        BufferedReader br = null;
+        BufferedReader br;
         try {
             fr = new FileReader (file);
             br = new BufferedReader(fr);

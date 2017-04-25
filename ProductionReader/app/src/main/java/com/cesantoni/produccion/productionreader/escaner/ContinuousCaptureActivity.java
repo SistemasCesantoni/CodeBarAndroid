@@ -237,7 +237,7 @@ public class ContinuousCaptureActivity extends Activity implements DecoratedBarc
         String cant_cajas = presentaciones.get(formato);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Alerta!");
-        builder.setMessage("Cajas: " + cant_cajas + "\n¿La cantidad de cajas es correcta?");
+        builder.setMessage("Cajas: " + cant_cajas + "\n¿La cantidad de cajas mostrada es correcta?");
         builder.setCancelable(false);
         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             @Override
