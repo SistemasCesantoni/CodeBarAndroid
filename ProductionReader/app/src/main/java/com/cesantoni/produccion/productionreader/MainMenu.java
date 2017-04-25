@@ -12,8 +12,6 @@ import com.cesantoni.produccion.productionreader.escaner.ContinuousCaptureActivi
 import com.cesantoni.produccion.productionreader.utilities.Utilities;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by Juan Antonio on 14/03/2017.
@@ -24,6 +22,7 @@ public class MainMenu extends AppCompatActivity {
     private String codigoInterno = "";   //codigo interno
     private String lote = "";           //lote tarima
     private String codigoExt = "";         //codigo externo
+    private int codeType;
 
     //verifica si el codigo leido era de tarima completa
     private boolean tarima_incompleta = false;
@@ -49,6 +48,7 @@ public class MainMenu extends AppCompatActivity {
             Bundle b = intent.getExtras();
             if(b != null) {
                 codigoInterno = b.getString("codigoInterno");
+                codeType = b.getInt("codeType");
                 lote = b.getString("lote");
                 String fecha = u.getFecha();
                 //verificar si la tarima esta completa

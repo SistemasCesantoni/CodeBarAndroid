@@ -28,10 +28,10 @@ public class DataVisualization extends AppCompatActivity {
         int tipo = getIntent().getExtras().getInt("tipo");
         Utilities u = new Utilities();
         if(tipo == 1) {
-            if (!u.leerCsv(visualTxt))
+            if (!u.leerCsv(visualTxt, true))
                 Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
         } else if(tipo == 2) {
-            if (!u.leerCsvTi(visualTxt))
+            if (!u.leerCsv(visualTxt, false))
                 Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, tipo, Toast.LENGTH_SHORT).show();

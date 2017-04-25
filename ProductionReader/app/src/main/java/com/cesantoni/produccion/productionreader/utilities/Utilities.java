@@ -1,9 +1,6 @@
 package com.cesantoni.produccion.productionreader.utilities;
 
-import android.content.Intent;
 import android.os.Environment;
-import android.text.TextUtils;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.opencsv.CSVReader;
@@ -18,8 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by Juan Antonio on 17/03/2017.
@@ -38,16 +33,10 @@ public class Utilities {
     private String calibre = "";
     private String productCode = "";
 
-    private  String filename = "items.csv";                    //nombre del archivo
-
     //tarimas completas
-    File tarjeta = Environment.getExternalStorageDirectory(); //direccion raiz de la tarjeta sd
-    File  directorio = new File(tarjeta.getAbsolutePath() + "/log/escaner");//crear archivo en la terjeta sd
-    File file_tc = null;
+    private File tarjeta = Environment.getExternalStorageDirectory(); //direccion raiz de la tarjeta sd
+    private File file_tc = null;
 
-    //tarimas incompletas
-    private String filename_ti = "items_inc.csv";
-    private File directorio_ti = new File(tarjeta.getAbsolutePath() + "/log/escaner/ti");
     private File file_ti = null;
 
     /**
@@ -76,18 +65,18 @@ public class Utilities {
      * @return true si se pudo crear el directorio y el archivo, false si no es posible crearlos
      */
     private boolean crearDirectorio() throws IOException {
-        String feche = getFecha();
-        String sep[] = TextUtils.split(feche, ",");
-        //filename = "items_" + sep[0]+".csv";
-       // filename = "items_.txt";
-        if(directorio.exists() && directorio_ti.exists()) {
-            file_tc = new File(directorio.getAbsolutePath(), filename);
-            file_ti = new File(directorio_ti.getAbsolutePath(), filename_ti);
+        File tc_dir = new File(tarjeta.getAbsolutePath() + "/log/escaner/tc/" + getFecha().trim());
+        File ti_dir = new File(tarjeta.getAbsolutePath() + "/log/escaner/ti/" + getFecha().trim());
+        String filename = "items.csv";
+        String filename_ti = "items_inc.csv";
+        if(tc_dir.exists() && ti_dir.exists()) {
+            file_tc = new File(tc_dir, filename);
+            file_ti = new File(ti_dir.getAbsolutePath(), filename_ti);
             return true;
         } else {
-            if(directorio.mkdirs() && directorio_ti.mkdirs()) {
-                file_tc = new File(directorio, filename);
-                file_ti = new File(directorio_ti, filename_ti);
+            if(tc_dir.mkdirs() && ti_dir.mkdirs()) {
+                file_tc = new File(tc_dir, filename);
+                file_ti = new File(ti_dir, filename_ti);
                 return true;
             }
             return false;
@@ -185,19 +174,22 @@ public class Utilities {
      * @param tx    textView enviado desde la interface para mostrar los datos
      * @return      true si fue posible escribir los datos, false si no fue posible
      */
-    public boolean leerCsv(TextView tx) {
+    public boolean leerCsv(TextView tx, boolean tarima_completa) {
         CSVReader csvReader = null; //instancia para el lector de csv
         try {
             crearDirectorio();
             //instanciar el lector, enviando el archivo ya creado, separado por comas, identificado con "" y comenzando desde la linea 1
-            csvReader = new CSVReader(new FileReader(file_tc),',');
+            if(tarima_completa)
+                csvReader = new CSVReader(new FileReader(file_tc), ',');
+            else
+                csvReader = new CSVReader(new FileReader(file_ti), ',');
             String[] itemDetails = null; //para guardar los datos leidos del csv
             String res = ""; //para formatear la salida en un textview
             //recorrer el archivo csv
-           while((itemDetails = csvReader.readNext())!=null) {
+            while((itemDetails = csvReader.readNext())!=null) {
                 //concatenar lo leido a la variable res
                 res += Arrays.toString(itemDetails);
-               res += "\n";
+                res += "\n";
             }
             //mostrar el resultado
             tx.setText(res);
@@ -217,46 +209,6 @@ public class Utilities {
     }
 
     /**
-     * Lee los datos almacenados en el archivo csv creado con los datos de las tarimas incompletas
-     * y los muestra en el TextView.
-     * que recibe como parametro.
-     *
-     * @param tx    textView enviado desde la interface para mostrar los datos
-     * @return      true si fue posible escribir los datos, false si no fue posible
-     */
-    public boolean leerCsvTi(TextView tx) {
-        CSVReader csvReader_ti = null;
-        try {
-            crearDirectorio();
-            //instanciar el lector, enviando el archivo ya creado, separado por comas, identificado con "" y comenzando desde la linea 1
-            csvReader_ti = new CSVReader(new FileReader(file_ti),',');
-            //(new FileReader(file2),',','"',0);
-            String[] itemDetails = null; //para guardar los datos leidos del csv
-            String res = ""; //para formatear la salida en un textview
-            //recorrer el archivo csv
-            while((itemDetails = csvReader_ti.readNext())!=null) {
-                //concatenar lo leido a la variable res
-                res += Arrays.toString(itemDetails);
-                res += "\n";
-            }
-            //mostrar el resultado
-            tx.setText(res);
-            return true;
-        }
-        catch(Exception ee) {
-            ee.printStackTrace();
-            return false;
-        } finally {
-            try {
-                csvReader_ti.close();
-            }
-            catch(Exception ee) {
-                ee.printStackTrace();
-            }
-        }
-    }
-
-    /**
      * Obtener la fecha y hora actual del sistema
      *
      * @return currentTimeStamp
@@ -264,11 +216,21 @@ public class Utilities {
     public String getFecha() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
             String currentTimeStamp = dateFormat.format(new Date());
+
+            return currentTimeStamp;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getHora() {
+        try {
+            SimpleDateFormat hourFormat = new SimpleDateFormat("HH-mm-ss");
             String currentHour = hourFormat.format(new Date());
 
-            return currentTimeStamp + "-" + currentHour;
+            return currentHour;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -289,7 +251,7 @@ public class Utilities {
         separarContenido(codigoInterno);
         separarCodigo(codigoExt);
         //arreglo que sera guardado en el csv
-        Log.e("ERR", productCode);
+        //Log.e("ERR", productCode);
         String cant_cajas = presentaciones.get(formato).toString();
         String[] code = {fecha, codigoInterno, lote, productCode, cant_cajas, "", modelo, color, calidad, tamaño, formato, dec, tono, calibre};
         return code;
@@ -408,6 +370,11 @@ public class Utilities {
         presentaciones.put("43", "52");
         presentaciones.put("44", "84");
         return presentaciones;
+    }
+
+    public boolean esCodigoInterno(String codigo) {
+        String clave = codigo.substring(0, 3);
+        return !clave.equals("750");
     }
 
 }

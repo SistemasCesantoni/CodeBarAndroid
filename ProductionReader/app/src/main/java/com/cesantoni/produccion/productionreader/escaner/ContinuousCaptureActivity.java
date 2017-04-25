@@ -25,7 +25,6 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -38,6 +37,8 @@ public class ContinuousCaptureActivity extends Activity implements DecoratedBarc
     private BeepManager beepManager;
     private String lastText;
 
+    Utilities u;
+
     private Button switchFlashlightButton;
 
     private int scannCounts = 0;                //Contador de codigos leidos
@@ -46,6 +47,8 @@ public class ContinuousCaptureActivity extends Activity implements DecoratedBarc
     private String codigoInterno = "";
     private String lote = "";
     private String codigoExt = "";
+
+    int code_type = 0;
 
     private HashMap<String, String> presentaciones;
 
@@ -65,18 +68,59 @@ public class ContinuousCaptureActivity extends Activity implements DecoratedBarc
             //primer codigo leido
             if (scannCounts == 1) {
                 codigoInterno = result.getText();
+                if(codigoInterno.length()==13) {
+                    if (u.esCodigoInterno(codigoInterno)) {
+                        code_type = 0;
+                    } else {
+                        Toast.makeText(ContinuousCaptureActivity.this,
+                                "Favor de leer el codigo interno",
+                                Toast.LENGTH_SHORT)
+                                .show();
+                        scannCounts--;
+                    }
+
+                } else if(codigoInterno.length()==17) {
+                    code_type = 1;
+                } else {
+                    Toast.makeText(ContinuousCaptureActivity.this,
+                            "Favor de leer el codigo interno",
+                            Toast.LENGTH_SHORT)
+                            .show();
+                    scannCounts--;
+                }
             }
             //segundo codigo leido
             if(scannCounts==2) {
                 lote = result.getText();
-                onPause();
-                //preguntar si la tarima esta completa
-                showDialog();
+                if (lote.length() > 5) {
+                    Toast.makeText(ContinuousCaptureActivity.this,
+                            "Favor de leer el lote",
+                            Toast.LENGTH_SHORT)
+                            .show();
+                    scannCounts--;
+                } else {
+                    onPause();
+                    //preguntar si la tarima esta completa
+                    showDialog();
+                }
+
             }
             //tercer codigo leido
             if(scannCounts==3) {
                 codigoExt = result.getText();
-                scannCounts++;
+                if (codigoExt.length() < 12 || codigoExt.length() > 13) {
+                    scannCounts--;
+                } else {
+                    if (u.esCodigoInterno(codigoExt)) {
+                        Toast.makeText(ContinuousCaptureActivity.this,
+                                "Favor de leer el codigo externo",
+                                Toast.LENGTH_SHORT)
+                                .show();
+                        scannCounts--;
+                    } else {
+                        scannCounts++;
+                    }
+                }
             }
             //Se han leido los 3 codigos, se regresan los datos para guardarlos en el csv
             if(scannCounts ==4) {
@@ -85,6 +129,7 @@ public class ContinuousCaptureActivity extends Activity implements DecoratedBarc
                 regresar.putExtra("lote", lote);
                 regresar.putExtra("codigoExt", codigoExt);
                 regresar.putExtra("tarimac", 1);
+                regresar.putExtra("codetype", code_type);
                 startActivity(regresar);
             }
 
@@ -102,6 +147,8 @@ public class ContinuousCaptureActivity extends Activity implements DecoratedBarc
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.continuous_scan);
+
+        u = new Utilities();
 
         Intent intent = this.getIntent();
         Bundle b = intent.getExtras();
