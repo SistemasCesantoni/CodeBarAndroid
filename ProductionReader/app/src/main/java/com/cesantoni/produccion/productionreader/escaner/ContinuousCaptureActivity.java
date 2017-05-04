@@ -92,7 +92,7 @@ public class ContinuousCaptureActivity extends Activity implements DecoratedBarc
             //segundo codigo leido
             if(scannCounts==2) {
                 lote = result.getText();
-                if (lote.length() > 5) {
+                if (lote.length() > 6 || lote.length() < 5 ) {
                     Toast.makeText(ContinuousCaptureActivity.this,
                             "Favor de leer el lote",
                             Toast.LENGTH_SHORT)
@@ -102,35 +102,9 @@ public class ContinuousCaptureActivity extends Activity implements DecoratedBarc
                     onPause();
                     //preguntar si la tarima esta completa
                     showDialog();
+
                 }
 
-            }
-            //tercer codigo leido
-            if(scannCounts==3) {
-                codigoExt = result.getText();
-                if (codigoExt.length() < 12 || codigoExt.length() > 13) {
-                    scannCounts--;
-                } else {
-                    if (u.esCodigoInterno(codigoExt)) {
-                        Toast.makeText(ContinuousCaptureActivity.this,
-                                "Favor de leer el codigo externo",
-                                Toast.LENGTH_SHORT)
-                                .show();
-                        scannCounts--;
-                    } else {
-                        scannCounts++;
-                    }
-                }
-            }
-            //Se han leido los 3 codigos, se regresan los datos para guardarlos en el csv
-            if(scannCounts ==4) {
-                Intent regresar = new Intent(ContinuousCaptureActivity.this, MainMenu.class);
-                regresar.putExtra("codigoInterno", codigoInterno);
-                regresar.putExtra("lote", lote);
-                regresar.putExtra("codigoExt", codigoExt);
-                regresar.putExtra("tarimac", 1);
-                regresar.putExtra("codetype", code_type);
-                startActivity(regresar);
             }
 
             ImageView imageView = (ImageView) findViewById(R.id.barcodePreview);
@@ -242,7 +216,14 @@ public class ContinuousCaptureActivity extends Activity implements DecoratedBarc
         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                onResume();
+                Intent regresar = new Intent(ContinuousCaptureActivity.this, MainMenu.class);
+                regresar.putExtra("codigoInterno", codigoInterno);
+                regresar.putExtra("lote", lote);
+                //regresar.putExtra("codigoExt", codigoExt);
+                regresar.putExtra("tarimac", 1);
+                regresar.putExtra("codetype", code_type);
+                startActivity(regresar);
+                finish();
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

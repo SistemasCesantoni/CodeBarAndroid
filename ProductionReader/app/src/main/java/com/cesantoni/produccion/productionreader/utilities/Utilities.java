@@ -3,6 +3,8 @@ package com.cesantoni.produccion.productionreader.utilities;
 import android.os.Environment;
 import android.widget.TextView;
 
+import com.cesantoni.produccion.productionreader.dao.Calibre;
+import com.cesantoni.produccion.productionreader.dao.Tono;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
@@ -12,6 +14,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -248,9 +251,8 @@ public class Utilities {
      * @param codigoExt         codigo externo de la empresa
      * @return                  code[]
      */
-    public String[] separarCadena(String codigoInterno, String fecha, String lote, String codigoExt, HashMap presentaciones) {
+    public String[] separarCadena(String codigoInterno, String fecha, String lote, HashMap presentaciones) {
         separarContenido(codigoInterno);
-        separarCodigo(codigoExt);
         //arreglo que sera guardado en el csv
         //Log.e("ERR", productCode);
         String cant_cajas = presentaciones.get(formato).toString();
@@ -371,6 +373,168 @@ public class Utilities {
         presentaciones.put("43", "52");
         presentaciones.put("44", "84");
         return presentaciones;
+    }
+
+    public ArrayList<Tono> cargarTonos() {
+        ArrayList<Tono> tonos = new ArrayList<>();
+        tonos.add(new Tono("00", "Fletes"));
+        tonos.add(new Tono("01", "1"));
+        tonos.add(new Tono("02", "2"));
+        tonos.add(new Tono("03", "3"));
+        tonos.add(new Tono("04", "4"));
+        tonos.add(new Tono("05", "5"));
+        tonos.add(new Tono("06", "6"));
+        tonos.add(new Tono("07", "7"));
+        tonos.add(new Tono("08", "8"));
+        tonos.add(new Tono("09", "9"));
+        tonos.add(new Tono("0A", "091"));
+        tonos.add(new Tono("0B", "0111"));
+        tonos.add(new Tono("10", "10"));
+        tonos.add(new Tono("11", "11"));
+        tonos.add(new Tono("13", "00"));
+        tonos.add(new Tono("14", "000"));
+        tonos.add(new Tono("15", "01"));
+        tonos.add(new Tono("16", "02"));
+        tonos.add(new Tono("17", "03"));
+        tonos.add(new Tono("18", "04"));
+        tonos.add(new Tono("19", "05"));
+        tonos.add(new Tono("20", "06"));
+        tonos.add(new Tono("21", "07"));
+        tonos.add(new Tono("22", "08"));
+        tonos.add(new Tono("23", "09"));
+        tonos.add(new Tono("24", "010"));
+        tonos.add(new Tono("25", "011"));
+        tonos.add(new Tono("26", "012"));
+        tonos.add(new Tono("27", "013"));
+        tonos.add(new Tono("28", "014"));
+        tonos.add(new Tono("29", "015"));
+        tonos.add(new Tono("30", "016"));
+        tonos.add(new Tono("31", "017"));
+        tonos.add(new Tono("32", "018"));
+        tonos.add(new Tono("33", "019"));
+        tonos.add(new Tono("34", "020"));
+        tonos.add(new Tono("35", "021"));
+        tonos.add(new Tono("36", "022"));
+        tonos.add(new Tono("37", "023"));
+        tonos.add(new Tono("38", "024"));
+        tonos.add(new Tono("39", "025"));
+        tonos.add(new Tono("40", "026"));
+        tonos.add(new Tono("41", "027"));
+        tonos.add(new Tono("42", "028"));
+        tonos.add(new Tono("43", "029"));
+        tonos.add(new Tono("44", "030"));
+        tonos.add(new Tono("45", "031"));
+        tonos.add(new Tono("46", "032"));
+        tonos.add(new Tono("47", "033"));
+        tonos.add(new Tono("48", "034"));
+        tonos.add(new Tono("49", "035"));
+        tonos.add(new Tono("50", "036"));
+        tonos.add(new Tono("51", "037"));
+        tonos.add(new Tono("52", "039"));
+        tonos.add(new Tono("53", "040"));
+        tonos.add(new Tono("54", "041"));
+        tonos.add(new Tono("55", "042"));
+        tonos.add(new Tono("56", "044"));
+        tonos.add(new Tono("57", "045"));
+        tonos.add(new Tono("58", "046"));
+        tonos.add(new Tono("59", "050"));
+        tonos.add(new Tono("60", "051"));
+        tonos.add(new Tono("61", "L.E."));
+        tonos.add(new Tono("62", "L.U."));
+        tonos.add(new Tono("63", "038"));
+        tonos.add(new Tono("64", "043"));
+        tonos.add(new Tono("65", "047"));
+        tonos.add(new Tono("66", "048"));
+        tonos.add(new Tono("67", "049"));
+        tonos.add(new Tono("68", "052"));
+        tonos.add(new Tono("69", "053"));
+        tonos.add(new Tono("70", "054"));
+        tonos.add(new Tono("71", "055"));
+        tonos.add(new Tono("72", "056"));
+        tonos.add(new Tono("73", "058"));
+        tonos.add(new Tono("74", "073"));
+        tonos.add(new Tono("75", "060"));
+        tonos.add(new Tono("76", "065"));
+        tonos.add(new Tono("77", "064"));
+        tonos.add(new Tono("78", "063"));
+        tonos.add(new Tono("79", "067"));
+        tonos.add(new Tono("80", "068"));
+        tonos.add(new Tono("81", "070"));
+        tonos.add(new Tono("82", "057"));
+        tonos.add(new Tono("83", "072"));
+        tonos.add(new Tono("84", "074"));
+        tonos.add(new Tono("85", "075"));
+        tonos.add(new Tono("86", "079"));
+        tonos.add(new Tono("87", "081"));
+        tonos.add(new Tono("88", "061"));
+        tonos.add(new Tono("89", "12"));
+        tonos.add(new Tono("90", "13"));
+        tonos.add(new Tono("91", "062"));
+        tonos.add(new Tono("92", "082"));
+        tonos.add(new Tono("93", "077"));
+        tonos.add(new Tono("94", "085"));
+        tonos.add(new Tono("95", "086"));
+        tonos.add(new Tono("96", "087"));
+        tonos.add(new Tono("97", "089"));
+        tonos.add(new Tono("98", "41"));
+        tonos.add(new Tono("99", "15"));
+        tonos.add(new Tono("P1", "3.8"));
+        tonos.add(new Tono("P2", "4.8"));
+        tonos.add(new Tono("P3", "20"));
+        tonos.add(new Tono("P4", "4.08"));
+        tonos.add(new Tono("P5", "3.8 (U) II"));
+        return tonos;
+    }
+
+    public ArrayList<Calibre> cargarCalibres() {
+        ArrayList<Calibre> calibres = new ArrayList<>();
+        calibres.add(new Calibre("39", "A"));
+        calibres.add(new Calibre("01", "B"));
+        calibres.add(new Calibre("14", "B/C"));
+        calibres.add(new Calibre("02", "C"));
+        calibres.add(new Calibre("15", "C/D"));
+        calibres.add(new Calibre("03", "D"));
+        calibres.add(new Calibre("16", "D/E"));
+        calibres.add(new Calibre("04", "E"));
+        calibres.add(new Calibre("21", "E/F"));
+        calibres.add(new Calibre("05", "F"));
+        calibres.add(new Calibre("22", "F/G"));
+        calibres.add(new Calibre("17", "G"));
+        calibres.add(new Calibre("23", "G/H"));
+        calibres.add(new Calibre("18", "H"));
+        calibres.add(new Calibre("19", "I"));
+        calibres.add(new Calibre("24", "N"));
+        calibres.add(new Calibre("25", "O"));
+        calibres.add(new Calibre("47", "O/P"));
+        calibres.add(new Calibre("40", "O/Q"));
+        calibres.add(new Calibre("06", "P"));
+        calibres.add(new Calibre("26", "P/Q"));
+        calibres.add(new Calibre("42", "P/R"));
+        calibres.add(new Calibre("41", "P/T"));
+        calibres.add(new Calibre("07", "Q"));
+        calibres.add(new Calibre("27", "Q/S"));
+        calibres.add(new Calibre("08", "R"));
+        calibres.add(new Calibre("28", "R/S"));
+        calibres.add(new Calibre("46", "R/T"));
+        calibres.add(new Calibre("09", "S"));
+        calibres.add(new Calibre("13", "S/T"));
+        calibres.add(new Calibre("43", "S/U"));
+        calibres.add(new Calibre("10", "T"));
+        calibres.add(new Calibre("44", "T/V"));
+        calibres.add(new Calibre("50", "T/W"));
+        calibres.add(new Calibre("11", "U"));
+        calibres.add(new Calibre("29", "U/V"));
+        calibres.add(new Calibre("45", "U/W"));
+        calibres.add(new Calibre("12", "V"));
+        calibres.add(new Calibre("49", "V/U"));
+        calibres.add(new Calibre("30", "V/W"));
+        calibres.add(new Calibre("48", "V/X"));
+        calibres.add(new Calibre("31", "W"));
+        calibres.add(new Calibre("32", "W/X"));
+        calibres.add(new Calibre("33", "X"));
+        calibres.add(new Calibre("35", "Y"));
+        calibres.add(new Calibre("37", "Z"));
+        return calibres;
     }
 
     public boolean esCodigoInterno(String codigo) {

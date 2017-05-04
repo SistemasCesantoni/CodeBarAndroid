@@ -20,7 +20,7 @@ import java.util.HashMap;
 public class MainMenu extends AppCompatActivity {
 
     private String codigoInterno = "";   //codigo interno
-    private String codigoExt = "";         //codigo externo
+    //private String codigoExt = "";         //codigo externo
     private int codeType;
 
     //verifica si el codigo leido era de tarima completa
@@ -51,9 +51,9 @@ public class MainMenu extends AppCompatActivity {
                 //verificar si la tarima esta completa
                 //1 si esta completa
                 if(b.getInt("tarimac") == 1) {
-                    codigoExt = b.getString("codigoExt");
+                    //codigoExt = b.getString("codigoExt");
                     tarima_incompleta = false;
-                    guardarDatos(fecha, codigoInterno, lote, codigoExt);
+                    guardarDatos(fecha, codigoInterno, lote);
                 //2 si esta incompleta
                 } else{
                     tarima_incompleta = true;
@@ -83,12 +83,11 @@ public class MainMenu extends AppCompatActivity {
      * @param fecha         fecha actual del escaneo
      * @param codigoInterno codigo de producto con valores internos
      * @param lote          lote de la tarima
-     * @param codigoExt     codigo externo de la empresa
      */
-    private void guardarDatos(String fecha, String codigoInterno,  String lote, String codigoExt) {
+    private void guardarDatos(String fecha, String codigoInterno,  String lote) {
         Utilities u = new Utilities();
-        String[] code = u.separarCadena(codigoInterno, fecha, lote, codigoExt, presentaciones);
-        String[] header = {"Fecha", "Codigo Interno", "Lote", "Codigo Externo", "Cantidad cajas", "", "Modelo", "Color", "Calidad", "Tamaño", "Formato", "Dec", "Tono", "Calibre"};
+        String[] code = u.separarCadena(codigoInterno, fecha, lote, presentaciones);
+        String[] header = {"Fecha", "Codigo Interno", "Lote", "Cantidad cajas", "", "Modelo", "Color", "Calidad", "Tamaño", "Formato", "Dec", "Tono", "Calibre"};
         //Verificar que fue posible separar las cadenas y obtener los codigos
         if(code!=null) {
             //verificar si fue posible guardar en el csv
