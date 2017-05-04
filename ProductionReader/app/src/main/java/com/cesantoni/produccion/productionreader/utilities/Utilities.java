@@ -137,6 +137,7 @@ public class Utilities {
                     return false;
                 } finally {
                     try {
+                        assert writer2 != null;
                         writer2.close();
                     } catch (Exception ee) {
                         ee.printStackTrace();
@@ -183,7 +184,7 @@ public class Utilities {
                 csvReader = new CSVReader(new FileReader(file_tc), ',');
             else
                 csvReader = new CSVReader(new FileReader(file_ti), ',');
-            String[] itemDetails = null; //para guardar los datos leidos del csv
+            String[] itemDetails; //para guardar los datos leidos del csv
             String res = ""; //para formatear la salida en un textview
             //recorrer el archivo csv
             while((itemDetails = csvReader.readNext())!=null) {
