@@ -1,12 +1,16 @@
 package com.cesantoni.produccion.productionreader.dao;
 
+import java.io.Serializable;
+
 /**
  * Created by liel on 04/05/2017.
  */
 
-public class Tono {
+public class Tono implements Serializable{
     private String key;
     private String value;
+
+    public Tono() { }
 
     public Tono(String key, String value) {
         this.key = key;

@@ -3,14 +3,18 @@ package com.cesantoni.produccion.productionreader;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.cesantoni.produccion.productionreader.Analitics.DataVisualization;
+import com.cesantoni.produccion.productionreader.dao.Tono;
 import com.cesantoni.produccion.productionreader.escaner.ContinuousCaptureActivity;
+import com.cesantoni.produccion.productionreader.utilities.CatalogosSingleton;
 import com.cesantoni.produccion.productionreader.utilities.Utilities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -27,6 +31,11 @@ public class MainMenu extends AppCompatActivity {
     private boolean tarima_incompleta = false;
 
     private HashMap<String, String> presentaciones;
+    private ArrayList<Tono> tonos = new ArrayList<>();
+
+    private Spinner spinnerTonos;
+
+    private CatalogosSingleton cat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +43,17 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
         Utilities u = new Utilities();
-        presentaciones = u.cargarPresentaciones();
 
+        cat = CatalogosSingleton.getInstance();
         //Obtener los datos enviados por el escaner
         Intent intent = this.getIntent();
         //verificar si el intent viene del escaner
         if (intent == null){
-            Log.e("Tag", "La actividad no se ha llamado mediante un intent.");
+
         } else {
             Bundle b = intent.getExtras();
             if(b != null) {
+                Toast.makeText(this, "SE OBTUVIERON LOS TONOS POR REFERENCIA", Toast.LENGTH_SHORT).show();
                 codigoInterno = b.getString("codigoInterno");
                 codeType = b.getInt("codeType");
                 String lote = b.getString("lote");
@@ -62,6 +72,7 @@ public class MainMenu extends AppCompatActivity {
                 }
             }
         }
+
     }
 
     /**
@@ -71,7 +82,9 @@ public class MainMenu extends AppCompatActivity {
      */
     public void escanearPer(View v) {
         Intent escaner = new Intent(this, ContinuousCaptureActivity.class);
-        escaner.putExtra("presentaciones", presentaciones);
+        Bundle mBundle = new Bundle();
+        mBundle.putSerializable("catalogo", cat);
+        escaner.putExtras(mBundle);
         startActivity(escaner);
         finish();
     }
