@@ -2,9 +2,10 @@ package com.cesantoni.produccion.productionreader.utilities;
 
 import android.os.Environment;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.cesantoni.produccion.productionreader.dao.Calibre;
-import com.cesantoni.produccion.productionreader.dao.Tono;
+import com.cesantoni.produccion.productionreader.dao.Tarima;
+import com.cesantoni.produccion.productionreader.escaner.ContinuousCaptureActivity;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
@@ -14,7 +15,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,9 +32,6 @@ public class Utilities {
     private String tamaño = "";
     private String formato = "";
     private String dec = "";
-    private String tono = "";
-    private String calibre = "";
-    private String productCode = "";
 
     //tarimas completas
     private File tarjeta = Environment.getExternalStorageDirectory(); //direccion raiz de la tarjeta sd
@@ -129,7 +126,7 @@ public class Utilities {
         CSVWriter writer3 = null;
         try {
             crearDirectorio();
-            if (!tarimaIncompleta) {
+            if (tarimaIncompleta) {
                 try {
                     writer2 = new CSVWriter(new FileWriter(file_tc, true), ',', '\''); //instanciar el writercsv y el file writer, con el archivo creado y poner true para no borrar el contenido
                     if (!verificarArchivo(file_tc)) {
@@ -147,7 +144,7 @@ public class Utilities {
                     }
                 }
             }
-            if (tarimaIncompleta) {
+            if (!tarimaIncompleta) {
                 try {
                     writer3 = new CSVWriter(new FileWriter(file_ti, true), ',', '\'');
 
@@ -241,40 +238,23 @@ public class Utilities {
         }
     }
 
-    /**
-     * Obtiene la cadena content separada en por claves y concatena fecha, lote y codigo externo,
-     * guarda estos datos en un arreglo llamado code, esto para tarimas completas.
-     *
-     * @param codigoInterno     codigo de barras interno
-     * @param fecha             fecha del escaneo
-     * @param lote              lote de la tarima
-     * @param codigoExt         codigo externo de la empresa
-     * @return                  code[]
-     */
-    public String[] separarCadena(String codigoInterno, String fecha, String lote, HashMap presentaciones) {
+
+    public Tarima crearTarima(String codigoInterno, String lote) {
         separarContenido(codigoInterno);
-        //arreglo que sera guardado en el csv
-        //Log.e("ERR", productCode);
-        String cant_cajas = presentaciones.get(formato).toString();
-        String[] code = {fecha, codigoInterno, lote, productCode, cant_cajas, "", modelo, color, calidad, tamaño, formato, dec, tono, calibre};
-        return code;
+
+        Tarima tarima = new Tarima();
+        tarima.setCodigocompleto(codigoInterno);
+        tarima.setModelo(modelo);
+        tarima.setColor(color);
+        tarima.setCalidad(calidad);
+        tarima.setTamaño(tamaño);
+        tarima.setFormato(formato);
+        tarima.setDec(dec);
+        tarima.setLote(lote);
+
+        return tarima;
     }
 
-    /**
-     * Obtiene la cadena content separada en por claves y concatena fecha, lote y codigo externo,
-     * guarda estos datos en un arreglo llamado code, esto para tarimas incompletas.
-     *
-     * @param codigoInterno codigo de barras interno
-     * @param fecha         fecha del escaneo
-     * @param lote          lote de la tarima
-     * @return              code[]
-     */
-    public String[] separarCadena(String codigoInterno, String fecha, String lote, String cant_cajas) {
-        separarContenido(codigoInterno);
-        //arreglo que sera guardado en el csv
-        String[] code = {fecha, codigoInterno, lote, cant_cajas, "", modelo, color, calidad, tamaño, formato, dec, tono, calibre};
-        return code;
-    }
 
     /**
      * Separar el codigo interno en claves individuales.
@@ -296,40 +276,39 @@ public class Utilities {
                 formato += codigoInterno.charAt(i);
             } else if (i >= 10 && i < 13) {
                 dec += codigoInterno.charAt(i);
-            } else if (i >= 13 && i < 15) {
+            } /*else if (i >= 13 && i < 15) {
                 tono += codigoInterno.charAt(i);
             } else {
                 calibre += codigoInterno.charAt(i);
-            }
+            }*/
         }
     }
-
-    public String obtenerCantCajas(String codigo) {
-        separarContenido(codigo);
-        return formato;
-    }
-
-    /**
-     * Extrae el codigo de producto desde el codigo externo leido en el escaner.
-     *
-     * @param codigoExt codigo leido desde el escaner
-     */
-    private void separarCodigo(String codigoExt) {
-        for(int i = 0; i< codigoExt.length(); i++) {
-            if (i > 6)
-                productCode += codigoExt.charAt(i);
-            if (codigoExt.length() == 13 && i == 11)
-                break;
-            if (codigoExt.length() == 12 && i == 10)
-                break;
-        }
-    }
-
-
 
     public boolean esCodigoInterno(String codigo) {
         String clave = codigo.substring(0, 3);
         return !clave.equals("750");
+    }
+
+
+
+    public String guardarDatos(Tarima tarima) {
+        String message = "";
+        String[] code = {getFecha(), tarima.getCodigocompleto(), tarima.getLote(), tarima.getCantCajas(),
+                "", tarima.getModelo(), tarima.getColor(),tarima.getCalidad(), tarima.getTamaño(),
+                tarima.getFormato(), tarima.getDec(), tarima.getTono(),tarima.getCalibre()};
+        String[] header = {"Fecha", "Codigo Interno", "Lote", "Cantidad cajas", "", "Modelo", "Color", "Calidad", "Tamaño", "Formato", "Dec", "Tono", "Calibre"};
+        //Verificar que fue posible separar las cadenas y obtener los codigos
+        if(code!=null) {
+            //verificar si fue posible guardar en el csv
+            if (!escribirCsv(code, header, tarima.isTarima_completa())) {
+                message = "Error al guardar los datos";
+            } else {
+                message = "Datos Guardados Correctamente";
+            }
+        } else {
+            message = "Error al leer los datos";
+        }
+        return message;
     }
 
 }

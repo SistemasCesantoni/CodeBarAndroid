@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.cesantoni.produccion.productionreader.MainMenu;
 import com.cesantoni.produccion.productionreader.R;
 import com.cesantoni.produccion.productionreader.dao.Calibre;
+import com.cesantoni.produccion.productionreader.dao.Tarima;
 import com.cesantoni.produccion.productionreader.dao.Tono;
 import com.cesantoni.produccion.productionreader.utilities.CatalogosSingleton;
 import com.cesantoni.produccion.productionreader.utilities.Utilities;
@@ -46,22 +47,25 @@ public class ContinuousCaptureActivity extends Activity
     private BeepManager beepManager;
     private String lastText;
 
-    Utilities u;
-
     private Button switchFlashlightButton;
+    private EditText cantCajas;
 
     private int scannCounts = 0;                //Contador de codigos leidos
 
     //codigos leidos
     private String codigoInterno = "";
     private String lote = "";
-    private String codigoExt = "";
 
     int code_type = 0;
 
+    private CatalogosSingleton cat;
     private HashMap<String, String> presentaciones;
     private ArrayList tonos = new ArrayList<>();
     private ArrayList calibres = new ArrayList<>();
+
+    private Tarima tar;
+
+    private Utilities u;
 
     private BarcodeCallback callback = new BarcodeCallback() {
         @Override
@@ -112,6 +116,7 @@ public class ContinuousCaptureActivity extends Activity
                 } else {
                     onPause();
                     //preguntar si la tarima esta completa
+                    tar = u.crearTarima(codigoInterno, lote);
                     showDialog();
 
                 }
@@ -137,7 +142,7 @@ public class ContinuousCaptureActivity extends Activity
 
         Intent intent = this.getIntent();
         Bundle b = intent.getExtras();
-        CatalogosSingleton cat = (CatalogosSingleton)b.getSerializable("catalogo");
+        cat = (CatalogosSingleton)b.getSerializable("catalogo");
         presentaciones = cat.getPresentaciones();
         tonos = cat.getTonos();
         calibres =  cat.getCalibres();
@@ -221,9 +226,7 @@ public class ContinuousCaptureActivity extends Activity
     }
 
     private void showDialog() {
-        Utilities u = new Utilities();
-        String formato = u.obtenerCantCajas(codigoInterno);
-        String cant_cajas = presentaciones.get(formato);
+        String cant_cajas = presentaciones.get(tar.getFormato());
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Alerta!");
         builder.setMessage("Cajas: " + cant_cajas + "\n¿La cantidad de cajas mostrada es correcta?");
@@ -231,20 +234,14 @@ public class ContinuousCaptureActivity extends Activity
         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent regresar = new Intent(ContinuousCaptureActivity.this, MainMenu.class);
-                regresar.putExtra("codigoInterno", codigoInterno);
-                regresar.putExtra("lote", lote);
-                //regresar.putExtra("codigoExt", codigoExt);
-                regresar.putExtra("tarimac", 1);
-                regresar.putExtra("codetype", code_type);
-                regresar.putExtra("tonos", tonos);
-                startActivity(regresar);
-                finish();
+                tar.setTarima_completa(true);
+                obtenerCantCajas();
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                tar.setTarima_completa(false);
                 obtenerCantCajas();
             }
         });
@@ -257,6 +254,8 @@ public class ContinuousCaptureActivity extends Activity
         LayoutInflater inflater = this.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.ingreso_cantidad_cajas, null);
 
+        cantCajas = (EditText) dialogView.findViewById(R.id.txt_cant_cajas);
+
         final Spinner spinnerTonos = (Spinner)dialogView.findViewById(R.id.spinner_tonos);
         ArrayAdapter<Tono> adapter = new ArrayAdapter<Tono>(this,
                 android.R.layout.simple_spinner_dropdown_item, tonos);
@@ -267,21 +266,33 @@ public class ContinuousCaptureActivity extends Activity
                 android.R.layout.simple_spinner_dropdown_item, calibres);
         spinnerCalibres.setAdapter(adapterC);
 
-        final EditText cantCajas = (EditText) dialogView.findViewById(R.id.txt_cant_cajas);
+        //final EditText cantCajas = (EditText) dialogView.findViewById(R.id.txt_cant_cajas);
         cantCajas.setEnabled(false);
 
         CheckBox check_cajas = (CheckBox)dialogView.findViewById(R.id.checkbox_cant_cajas);
+
         check_cajas.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                @Override
                public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(isChecked)
+                if(isChecked) {
                     cantCajas.setEnabled(true);
-                else
-                   cantCajas.setEnabled(false);
+                    tar.setTarima_completa(false);
+                } else {
+                    cantCajas.setEnabled(false);
+                    tar.setTarima_completa(true);
+                }
                }
            }
         );
+
+        if (tar.isTarima_completa()) {
+            String cant_cajas = presentaciones.get(tar.getFormato());
+            cantCajas.setText(cant_cajas);
+            check_cajas.setChecked(false);
+        } else {
+            check_cajas.setChecked(true);
+        }
 
         builder.setView(dialogView)
                 .setPositiveButton(R.string.btn_guardar_cajas, new DialogInterface.OnClickListener() {
@@ -289,28 +300,23 @@ public class ContinuousCaptureActivity extends Activity
                     public void onClick(DialogInterface dialog, int id) {
                         onPause();
 
-                        EditText cantCajas = (EditText) dialogView.findViewById(R.id.txt_cant_cajas);
+                        final String cant_cajas_final = cantCajas.getText().toString();
 
-                        String cantidad = cantCajas.getText().toString();
+                        final Tono tono_sel = (Tono)spinnerTonos.getSelectedItem();
+                        final Calibre cal_sel = (Calibre) spinnerCalibres.getSelectedItem();
 
-                        Tono tono_sel = (Tono)spinnerTonos.getSelectedItem();
-                        Calibre cal_sel = (Calibre) spinnerCalibres.getSelectedItem();
+                        tar.setCantCajas(cant_cajas_final);
+                        tar.setTono(tono_sel.getKey());
+                        tar.setCalibre(cal_sel.getKey());
 
-                        Intent return_main = new Intent(ContinuousCaptureActivity.this, MainMenu.class)
-                                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        return_main.putExtra("codigoInterno", codigoInterno);
-                        return_main.putExtra("lote", lote);
-                        return_main.putExtra("tarimac", 2);
-                        return_main.putExtra("cantCajas", cantidad);
-                        return_main.putExtra("tono", tono_sel.getKey());
-                        return_main.putExtra("calibre", cal_sel.getKey());
-                        startActivity(return_main);
-                        finish();
+                        String message = u.guardarDatos(tar);
+                        guardadoCompleto(message);
+                        dialog.dismiss();
                     }
                 })
                 .setNegativeButton(R.string.btn_cancelar_cajas, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent i = new Intent(ContinuousCaptureActivity.this, MainMenu.class)
+                        Intent i = new Intent(ContinuousCaptureActivity.this, ContinuousCaptureActivity.class)
                                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(i);
                         finish();
@@ -322,12 +328,25 @@ public class ContinuousCaptureActivity extends Activity
 
     }
 
-    /*public void onCheckboxClicked(View v) {
-        boolean checked = ((CheckBox) v).isChecked();
-        EditText cantCajas = (EditText) findViewById(R.id.txt_cant_cajas);
-        if(checked)
-            cantCajas.setEnabled(true);
-        else
-            cantCajas.setEnabled(false);
-    }*/
+    private void guardadoCompleto(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Alerta!");
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent return_main = new Intent(ContinuousCaptureActivity.this, MainMenu.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                Bundle mBundle = new Bundle();
+                mBundle.putSerializable("catalogo", cat);
+                return_main.putExtras(mBundle);
+                startActivity(return_main);
+                finish();
+            }
+        });
+        builder.create();
+        builder.show();
+    }
+
 }

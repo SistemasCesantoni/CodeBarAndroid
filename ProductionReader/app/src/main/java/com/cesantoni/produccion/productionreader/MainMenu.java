@@ -24,16 +24,10 @@ import java.util.HashMap;
 public class MainMenu extends AppCompatActivity {
 
     private String codigoInterno = "";   //codigo interno
-    //private String codigoExt = "";         //codigo externo
     private int codeType;
 
     //verifica si el codigo leido era de tarima completa
     private boolean tarima_incompleta = false;
-
-    private HashMap<String, String> presentaciones;
-    private ArrayList<Tono> tonos = new ArrayList<>();
-
-    private Spinner spinnerTonos;
 
     private CatalogosSingleton cat;
 
@@ -44,35 +38,19 @@ public class MainMenu extends AppCompatActivity {
 
         Utilities u = new Utilities();
 
-        cat = CatalogosSingleton.getInstance();
         //Obtener los datos enviados por el escaner
         Intent intent = this.getIntent();
         //verificar si el intent viene del escaner
         if (intent == null){
-
         } else {
             Bundle b = intent.getExtras();
             if(b != null) {
-                Toast.makeText(this, "SE OBTUVIERON LOS TONOS POR REFERENCIA", Toast.LENGTH_SHORT).show();
-                codigoInterno = b.getString("codigoInterno");
-                codeType = b.getInt("codeType");
-                String lote = b.getString("lote");
-                String fecha = u.getFecha();
-                //verificar si la tarima esta completa
-                //1 si esta completa
-                if(b.getInt("tarimac") == 1) {
-                    //codigoExt = b.getString("codigoExt");
-                    tarima_incompleta = false;
-                    guardarDatos(fecha, codigoInterno, lote);
-                //2 si esta incompleta
-                } else{
-                    tarima_incompleta = true;
-                    String cant_cajas = b.getString("cantCajas");
-                    guardarDatosTarimaInc(fecha, codigoInterno, lote, cant_cajas);
-                }
+                cat = (CatalogosSingleton)b.getSerializable("catalogo");
             }
         }
-
+        if(cat==null) {
+            cat = CatalogosSingleton.getInstance();
+        }
     }
 
     /**
@@ -87,50 +65,6 @@ public class MainMenu extends AppCompatActivity {
         escaner.putExtras(mBundle);
         startActivity(escaner);
         finish();
-    }
-
-    /**
-     * Prepara los datos para guardarlos en el csv si la tarima esta completa,
-     * verifica si fue posible guardarlos y muestra mensajes de error en caso de que no sea posible.
-     *
-     * @param fecha         fecha actual del escaneo
-     * @param codigoInterno codigo de producto con valores internos
-     * @param lote          lote de la tarima
-     */
-    private void guardarDatos(String fecha, String codigoInterno,  String lote) {
-        Utilities u = new Utilities();
-        String[] code = u.separarCadena(codigoInterno, fecha, lote, presentaciones);
-        String[] header = {"Fecha", "Codigo Interno", "Lote", "Cantidad cajas", "", "Modelo", "Color", "Calidad", "Tamaño", "Formato", "Dec", "Tono", "Calibre"};
-        //Verificar que fue posible separar las cadenas y obtener los codigos
-        if(code!=null) {
-            //verificar si fue posible guardar en el csv
-            if (!u.escribirCsv(code, header, tarima_incompleta))
-                Toast.makeText(this, "Error al guardar los datos", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Error al leer los datos", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * Prepara los datos para guardarlos en el csv si la tarima esta incompleta,
-     * verifica si fue posible guardarlos y muestra mensajes de error en caso de que no sea posible.
-     *
-     * @param fecha         fecha actual del escaneo
-     * @param codigoInterno codigo de producto con valores internos
-     * @param lote          lote de la tarima
-     */
-    private void guardarDatosTarimaInc(String fecha, String codigoInterno,  String lote, String cant_cajas) {
-        Utilities u = new Utilities();
-        String[] header = {"Fecha", "Codigo Interno", "Lote", "Cantidad cajas", "", "Modelo", "Color", "Calidad", "Tamaño", "Formato", "Dec", "Tono", "Calibre"};
-        String[] code = u.separarCadena(codigoInterno, fecha, lote, cant_cajas);
-        //Verificar que fue posible separar las cadenas y obtener los codigos
-        if(code!=null) {
-            //verificar si fue posible guardar en el csv
-            if (!u.escribirCsv(code, header, tarima_incompleta))
-                Toast.makeText(this, "Error al guardar los datos", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Error al leer los datos", Toast.LENGTH_LONG).show();
-        }
     }
 
     /**
