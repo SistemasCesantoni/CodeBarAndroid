@@ -47,7 +47,7 @@ public class CatalogosSingleton implements Serializable{
         return calibres;
     }
 
-    public void setPresentaciones() {
+    private void setPresentaciones() {
         presentaciones = new HashMap<String, String>();
         presentaciones.put("00", "Fletes");
         presentaciones.put("01", "Unidad");
@@ -96,7 +96,7 @@ public class CatalogosSingleton implements Serializable{
         presentaciones.put("44", "84");
     }
 
-    public void setTonos() {
+    private void setTonos() {
         tonos = new ArrayList<>();
         tonos.add(new Tono("00", "Fletes"));
         tonos.add(new Tono("01", "1"));
@@ -206,7 +206,7 @@ public class CatalogosSingleton implements Serializable{
         tonos.add(new Tono("P5", "3.8 (U) II"));
     }
 
-    public void setCalibres() {
+    private void setCalibres() {
         calibres = new ArrayList<>();
         calibres.add(new Calibre("39", "A"));
         calibres.add(new Calibre("01", "B"));

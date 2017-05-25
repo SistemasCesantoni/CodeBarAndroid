@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cesantoni.produccion.productionreader.Analitics.DataVisualization">
-
-    <TextView
-        android:id="@+id/txt_visualizacion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.cesantoni.produccion.productionreader.ListaArchivos"
+    tools:showIn="@layout/activity_lista_archivos">
 
     <TextView android:layout_height="wrap_content"
         android:layout_width="fill_parent"
@@ -25,4 +21,4 @@
         android:id="@android:id/empty"
         android:text="Carpeta vacia"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

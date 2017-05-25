@@ -1,5 +1,6 @@
 package com.cesantoni.produccion.productionreader.escaner;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -266,7 +268,6 @@ public class ContinuousCaptureActivity extends Activity
                 android.R.layout.simple_spinner_dropdown_item, calibres);
         spinnerCalibres.setAdapter(adapterC);
 
-        //final EditText cantCajas = (EditText) dialogView.findViewById(R.id.txt_cant_cajas);
         cantCajas.setEnabled(false);
 
         CheckBox check_cajas = (CheckBox)dialogView.findViewById(R.id.checkbox_cant_cajas);
@@ -300,18 +301,19 @@ public class ContinuousCaptureActivity extends Activity
                     public void onClick(DialogInterface dialog, int id) {
                         onPause();
 
-                        final String cant_cajas_final = cantCajas.getText().toString();
+                        String cant_cajas_final = cantCajas.getText().toString();
+                        if (!cant_cajas_final.isEmpty()) {
+                            final Tono tono_sel = (Tono) spinnerTonos.getSelectedItem();
+                            final Calibre cal_sel = (Calibre) spinnerCalibres.getSelectedItem();
 
-                        final Tono tono_sel = (Tono)spinnerTonos.getSelectedItem();
-                        final Calibre cal_sel = (Calibre) spinnerCalibres.getSelectedItem();
+                            tar.setCantCajas(cant_cajas_final);
+                            tar.setTono(tono_sel.getKey());
+                            tar.setCalibre(cal_sel.getKey());
 
-                        tar.setCantCajas(cant_cajas_final);
-                        tar.setTono(tono_sel.getKey());
-                        tar.setCalibre(cal_sel.getKey());
-
-                        String message = u.guardarDatos(tar);
-                        guardadoCompleto(message);
-                        dialog.dismiss();
+                            String message = u.guardarDatos(tar);
+                            guardadoCompleto(message);
+                            dialog.dismiss();
+                        }
                     }
                 })
                 .setNegativeButton(R.string.btn_cancelar_cajas, new DialogInterface.OnClickListener() {

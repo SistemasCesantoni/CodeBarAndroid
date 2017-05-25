@@ -4,30 +4,18 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.cesantoni.produccion.productionreader.Analitics.DataVisualization;
-import com.cesantoni.produccion.productionreader.dao.Tono;
 import com.cesantoni.produccion.productionreader.escaner.ContinuousCaptureActivity;
 import com.cesantoni.produccion.productionreader.utilities.CatalogosSingleton;
 import com.cesantoni.produccion.productionreader.utilities.Utilities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Juan Antonio on 14/03/2017.
  */
 
 public class MainMenu extends AppCompatActivity {
-
-    private String codigoInterno = "";   //codigo interno
-    private int codeType;
-
-    //verifica si el codigo leido era de tarima completa
-    private boolean tarima_incompleta = false;
 
     private CatalogosSingleton cat;
 
@@ -92,4 +80,5 @@ public class MainMenu extends AppCompatActivity {
         mostrar.putExtra("tipo", 2);
         startActivity(mostrar);
     }
+
 }

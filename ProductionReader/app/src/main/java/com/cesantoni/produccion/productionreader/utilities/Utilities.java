@@ -2,10 +2,8 @@ package com.cesantoni.produccion.productionreader.utilities;
 
 import android.os.Environment;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cesantoni.produccion.productionreader.dao.Tarima;
-import com.cesantoni.produccion.productionreader.escaner.ContinuousCaptureActivity;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
@@ -17,7 +15,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  * Created by Juan Antonio on 17/03/2017.
@@ -58,15 +55,23 @@ public class Utilities {
         return sdDisponible;
     }
 
+    public String getDirectorioTc() {
+        return tarjeta.getAbsolutePath() + "/log/escaner/tc/";
+    }
+
+    public String getDirectorioTi() {
+        return tarjeta.getAbsolutePath() + "/log/escaner/ti/";
+    }
+
     /**
      * Verifica si el archivo en la ruta especifica existe, si no, crea la rama de directorios
      * necesarios y despues crea el archivo.
      *
      * @return true si se pudo crear el directorio y el archivo, false si no es posible crearlos
      */
-    private boolean crearDirectorio() throws IOException {
-        File tc_dir = new File(tarjeta.getAbsolutePath() + "/log/escaner/tc/" + getFecha().trim());
-        File ti_dir = new File(tarjeta.getAbsolutePath() + "/log/escaner/ti/" + getFecha().trim());
+    private boolean crearDirectorio(String lote) throws IOException {
+        File tc_dir = new File(tarjeta.getAbsolutePath() + "/log/escaner/tc/" + lote);
+        File ti_dir = new File(tarjeta.getAbsolutePath() + "/log/escaner/ti/" + lote);
         String filename = "items.csv";
         String filename_ti = "items_inc.csv";
         if(tc_dir.exists() && ti_dir.exists()) {
@@ -121,11 +126,11 @@ public class Utilities {
      * @return                  true si los datos fueron escritos correctamente, false en caso
      *                          contrario
      */
-    public boolean escribirCsv(String code[], String header[], boolean tarimaIncompleta) {
+    private boolean escribirCsv(String code[], String header[], boolean tarimaIncompleta, String lote) {
         CSVWriter writer2 = null;
         CSVWriter writer3 = null;
         try {
-            crearDirectorio();
+            crearDirectorio(lote);
             if (tarimaIncompleta) {
                 try {
                     writer2 = new CSVWriter(new FileWriter(file_tc, true), ',', '\''); //instanciar el writercsv y el file writer, con el archivo creado y poner true para no borrar el contenido
@@ -175,15 +180,15 @@ public class Utilities {
      * @param tx    textView enviado desde la interface para mostrar los datos
      * @return      true si fue posible escribir los datos, false si no fue posible
      */
-    public boolean leerCsv(TextView tx, boolean tarima_completa) {
+    public boolean leerCsv(TextView tx, boolean tarima_completa, File archivo) {
         CSVReader csvReader = null; //instancia para el lector de csv
         try {
-            crearDirectorio();
+            //crearDirectorio();
             //instanciar el lector, enviando el archivo ya creado, separado por comas, identificado con "" y comenzando desde la linea 1
-            if(tarima_completa)
-                csvReader = new CSVReader(new FileReader(file_tc), ',');
-            else
-                csvReader = new CSVReader(new FileReader(file_ti), ',');
+            //if(tarima_completa)
+            //   csvReader = new CSVReader(new FileReader(file_tc), ',');
+            //else
+                csvReader = new CSVReader(new FileReader(archivo), ',');
             String[] itemDetails; //para guardar los datos leidos del csv
             String res = ""; //para formatear la salida en un textview
             //recorrer el archivo csv
@@ -214,7 +219,7 @@ public class Utilities {
      *
      * @return currentTimeStamp
      */
-    public String getFecha() {
+    private String getFecha() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
             String currentTimeStamp = dateFormat.format(new Date());
@@ -225,19 +230,6 @@ public class Utilities {
             return null;
         }
     }
-
-    public String getHora() {
-        try {
-            SimpleDateFormat hourFormat = new SimpleDateFormat("HH-mm-ss");
-            String currentHour = hourFormat.format(new Date());
-
-            return currentHour;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 
     public Tarima crearTarima(String codigoInterno, String lote) {
         separarContenido(codigoInterno);
@@ -254,8 +246,7 @@ public class Utilities {
 
         return tarima;
     }
-
-
+    
     /**
      * Separar el codigo interno en claves individuales.
      *
@@ -289,8 +280,6 @@ public class Utilities {
         return !clave.equals("750");
     }
 
-
-
     public String guardarDatos(Tarima tarima) {
         String message = "";
         String[] code = {getFecha(), tarima.getCodigocompleto(), tarima.getLote(), tarima.getCantCajas(),
@@ -300,7 +289,7 @@ public class Utilities {
         //Verificar que fue posible separar las cadenas y obtener los codigos
         if(code!=null) {
             //verificar si fue posible guardar en el csv
-            if (!escribirCsv(code, header, tarima.isTarima_completa())) {
+            if (!escribirCsv(code, header, tarima.isTarima_completa(), tarima.getLote())) {
                 message = "Error al guardar los datos";
             } else {
                 message = "Datos Guardados Correctamente";

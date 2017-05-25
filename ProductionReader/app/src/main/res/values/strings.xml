@@ -15,5 +15,6 @@
     <string name="cant_cajas">Cantidad Cajas</string>
     <string name="btn_guardar_cajas">Guardar</string>
     <string name="btn_cancelar_cajas">Cancelar</string>
+    <string name="title_activity_lista_archivos">ListaArchivos</string>
 
 </resources>
