@@ -1,6 +1,5 @@
 package com.cesantoni.produccion.productionreader.escaner;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -145,6 +143,7 @@ public class ContinuousCaptureActivity extends Activity
         Intent intent = this.getIntent();
         Bundle b = intent.getExtras();
         cat = (CatalogosSingleton)b.getSerializable("catalogo");
+        assert cat != null;
         presentaciones = cat.getPresentaciones();
         tonos = cat.getTonos();
         calibres =  cat.getCalibres();

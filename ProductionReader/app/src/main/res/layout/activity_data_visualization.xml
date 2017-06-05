@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutp"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,11 +11,13 @@
     <TextView
         android:id="@+id/txt_visualizacion"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="20sp"/>
 
     <TextView android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:id="@+id/rutaActual"/>
+        android:id="@+id/rutaActual"
+        android:textSize="18sp"/>/>
 
     <ListView android:layout_height="wrap_content"
         android:layout_width="fill_parent"
@@ -23,6 +26,6 @@
     <TextView android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:id="@android:id/empty"
-        android:text="Carpeta vacia"/>
+        />
 
 </LinearLayout>

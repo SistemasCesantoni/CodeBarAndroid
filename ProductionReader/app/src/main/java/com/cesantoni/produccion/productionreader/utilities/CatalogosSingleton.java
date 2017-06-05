@@ -48,7 +48,7 @@ public class CatalogosSingleton implements Serializable{
     }
 
     private void setPresentaciones() {
-        presentaciones = new HashMap<String, String>();
+        presentaciones = new HashMap<>();
         presentaciones.put("00", "Fletes");
         presentaciones.put("01", "Unidad");
         presentaciones.put("02", "72");

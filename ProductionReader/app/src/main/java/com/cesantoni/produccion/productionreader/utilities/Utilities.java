@@ -33,7 +33,6 @@ public class Utilities {
     //tarimas completas
     private File tarjeta = Environment.getExternalStorageDirectory(); //direccion raiz de la tarjeta sd
     private File file_tc = null;
-
     private File file_ti = null;
 
     /**
@@ -55,6 +54,19 @@ public class Utilities {
         return sdDisponible;
     }
 
+    public boolean dirIsEnabled() {
+        try {
+            File test = new File(tarjeta.getAbsolutePath() + "/log/escaner/");
+            if(test.exists()) {
+                return true;
+            } else {
+                return false;
+            }
+        }catch (Exception e) {
+            return false;
+        }
+    }
+
     public String getDirectorioTc() {
         return tarjeta.getAbsolutePath() + "/log/escaner/tc/";
     }
@@ -69,7 +81,7 @@ public class Utilities {
      *
      * @return true si se pudo crear el directorio y el archivo, false si no es posible crearlos
      */
-    private boolean crearDirectorio(String lote) throws IOException {
+    public boolean crearDirectorio(String lote) throws IOException {
         File tc_dir = new File(tarjeta.getAbsolutePath() + "/log/escaner/tc/" + lote);
         File ti_dir = new File(tarjeta.getAbsolutePath() + "/log/escaner/ti/" + lote);
         String filename = "items.csv";
@@ -188,7 +200,7 @@ public class Utilities {
             //if(tarima_completa)
             //   csvReader = new CSVReader(new FileReader(file_tc), ',');
             //else
-                csvReader = new CSVReader(new FileReader(archivo), ',');
+            csvReader = new CSVReader(new FileReader(archivo), ',');
             String[] itemDetails; //para guardar los datos leidos del csv
             String res = ""; //para formatear la salida en un textview
             //recorrer el archivo csv
@@ -219,12 +231,11 @@ public class Utilities {
      *
      * @return currentTimeStamp
      */
-    private String getFecha() {
+    public String getFecha() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            String currentTimeStamp = dateFormat.format(new Date());
 
-            return currentTimeStamp;
+            return dateFormat.format(new Date());
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -281,7 +292,7 @@ public class Utilities {
     }
 
     public String guardarDatos(Tarima tarima) {
-        String message = "";
+        String message;
         String[] code = {getFecha(), tarima.getCodigocompleto(), tarima.getLote(), tarima.getCantCajas(),
                 "", tarima.getModelo(), tarima.getColor(),tarima.getCalidad(), tarima.getTamaño(),
                 tarima.getFormato(), tarima.getDec(), tarima.getTono(),tarima.getCalibre()};

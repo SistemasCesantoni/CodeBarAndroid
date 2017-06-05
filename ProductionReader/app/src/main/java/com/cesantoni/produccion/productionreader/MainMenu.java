@@ -24,16 +24,13 @@ public class MainMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        Utilities u = new Utilities();
-
         //Obtener los datos enviados por el escaner
         Intent intent = this.getIntent();
         //verificar si el intent viene del escaner
-        if (intent == null){
-        } else {
+        if (intent != null) {
             Bundle b = intent.getExtras();
-            if(b != null) {
-                cat = (CatalogosSingleton)b.getSerializable("catalogo");
+            if (b != null) {
+                cat = (CatalogosSingleton) b.getSerializable("catalogo");
             }
         }
         if(cat==null) {

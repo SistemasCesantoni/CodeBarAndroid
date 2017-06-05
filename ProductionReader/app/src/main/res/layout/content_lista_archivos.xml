@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.cesantoni.produccion.productionreader.ListaArchivos"
-    tools:showIn="@layout/activity_lista_archivos">
+    tools:context="com.cesantoni.produccion.productionreader.Analitics.DataVisualization"
+    tools:showIn="@layout/activity_data_visualization">
 
     <TextView android:layout_height="wrap_content"
         android:layout_width="fill_parent"
