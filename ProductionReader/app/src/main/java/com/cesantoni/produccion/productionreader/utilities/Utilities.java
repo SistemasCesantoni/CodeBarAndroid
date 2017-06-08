@@ -68,15 +68,15 @@ public class Utilities {
     }
 
     public String getDirectorioAlm() {
-        return tarjeta.getAbsolutePath() + "/log/escaner/";
+        return tarjeta.getAbsolutePath() + "/log/escaner";
     }
 
     public String getDirectorioTc() {
-        return tarjeta.getAbsolutePath() + "/log/escaner/tc/";
+        return tarjeta.getAbsolutePath() + "/log/escaner/tc";
     }
 
     public String getDirectorioTi() {
-        return tarjeta.getAbsolutePath() + "/log/escaner/ti/";
+        return tarjeta.getAbsolutePath() + "/log/escaner/ti";
     }
 
     /**

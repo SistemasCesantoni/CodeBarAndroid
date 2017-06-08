@@ -17,4 +17,7 @@
     <string name="btn_cancelar_cajas">Cancelar</string>
     <string name="title_activity_lista_archivos">ListaArchivos</string>
 
+    <string name="salir_lista">Volver al Menú</string>
+
+
 </resources>

@@ -12,11 +12,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cesantoni.produccion.productionreader.MainMenu;
 import com.cesantoni.produccion.productionreader.R;
+import com.cesantoni.produccion.productionreader.dao.ModeloListaArchivos;
+import com.cesantoni.produccion.productionreader.utilities.AdapterArchivos;
 import com.cesantoni.produccion.productionreader.utilities.Utilities;
 
 import java.io.File;
@@ -34,6 +37,7 @@ public class DataVisualization extends ListActivity {
     private List<String> listaRutasArchivos;
     private String directorioRaiz;
     private TextView carpetaActual;
+    private String group;
 
     Utilities u;
 
@@ -69,7 +73,7 @@ public class DataVisualization extends ListActivity {
                 }
             });
 
-            LinearLayout ll = (LinearLayout)findViewById(R.id.layoutp);
+            LinearLayout ll = (LinearLayout) findViewById(R.id.layoutp);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             lp.gravity = Gravity.BOTTOM;
@@ -81,12 +85,21 @@ public class DataVisualization extends ListActivity {
 
     private void verArchivoDirectorio(String rutaDirectorio) {
         if (rutaDirectorio.equals(u.getDirectorioRaiz())) {
-
             rutaDirectorio = u.getDirectorioAlm();
             Toast.makeText(this, "Por favor permanecer en esta carpeta", Toast.LENGTH_SHORT).show();
         }
-        carpetaActual.setText("Estas en: " + rutaDirectorio);
+        if (rutaDirectorio.equals(u.getDirectorioTc())) {
+            group = "Tarimas Completas";
+        }
+        if (rutaDirectorio.equals(u.getDirectorioTi())) {
+            group = "Tarimas Incompletas";
+        }
+        if (rutaDirectorio.equals(u.getDirectorioAlm())) {
+            group = "Registros";
+        }
+        carpetaActual.setText(group);
         List<String> listaNombresArchivos = new ArrayList<>();
+        ArrayList<ModeloListaArchivos> listaArchivosIco = new ArrayList<>();
         listaRutasArchivos = new ArrayList<>();
         File directorioActual = new File(rutaDirectorio);
         File[] listaArchivos = directorioActual.listFiles();
@@ -96,6 +109,7 @@ public class DataVisualization extends ListActivity {
         //if(!rutaDirectorio.equals(directorioRaiz)) {
             listaNombresArchivos.add("../");
             listaRutasArchivos.add(directorioActual.getParent());
+            listaArchivosIco.add(new ModeloListaArchivos(R.drawable.back_ico,"../"));
             x = 1;
         //}
 
@@ -109,19 +123,25 @@ public class DataVisualization extends ListActivity {
             File archivo = new File(listaRutasArchivos.get(i));
             if(archivo.isFile()) {
                 listaNombresArchivos.add(archivo.getName());
+                listaArchivosIco.add(new ModeloListaArchivos(R.drawable.file_ico,"/" + archivo.getName()));
             } else {
                 listaNombresArchivos.add("/" + archivo.getName());
+                listaArchivosIco.add(new ModeloListaArchivos(R.drawable.folder_icon,"/" + archivo.getName()));
             }
         }
 
         if(listaArchivos.length < 1) {
             listaNombresArchivos.add("No hay ningun archivo");
+            listaArchivosIco.add(new ModeloListaArchivos(R.drawable.error_ico,"No hay ningun archivo"));
             listaRutasArchivos.add(rutaDirectorio);
         }
 
-        ArrayAdapter<String> adaptador = new ArrayAdapter<>
-                (this, R.layout.text_view_lista_archivos, listaNombresArchivos);
-        setListAdapter(adaptador);
+        AdapterArchivos adapter = new AdapterArchivos(this, listaArchivosIco);
+
+        setListAdapter(adapter);
+        /*ArrayAdapter<String> adaptador = new ArrayAdapter<>
+                (this, R.layout.text_view_lista_archivos, listaNombresArchivos);*/
+        //setListAdapter(adapter);
     }
 
     @Override
@@ -135,7 +155,7 @@ public class DataVisualization extends ListActivity {
     }
 
     private void showFileOptions(final File archivo, final boolean tarima_completa) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Selecciona una opción...");
         builder.setMessage("¿Qué desea hacer con el archivo?");
         builder.setCancelable(false);
@@ -144,7 +164,7 @@ public class DataVisualization extends ListActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //u.leerCsv(txt, tarima_completa, archivo);
-                finish();
+                dialog.dismiss();
             }
         });
         builder.setPositiveButton("Enviar mail", new DialogInterface.OnClickListener() {
@@ -162,6 +182,11 @@ public class DataVisualization extends ListActivity {
         });
         builder.create();
         builder.show();
+    }
+
+    public void returnMainMenu(View v) {
+        Intent i = new Intent(this, MainMenu.class);
+        startActivity(i);
     }
 
 }
