@@ -57,14 +57,18 @@ public class Utilities {
     public boolean dirIsEnabled() {
         try {
             File test = new File(tarjeta.getAbsolutePath() + "/log/escaner/");
-            if(test.exists()) {
-                return true;
-            } else {
-                return false;
-            }
+            return test.exists();
         }catch (Exception e) {
             return false;
         }
+    }
+
+    public String getDirectorioRaiz() {
+        return tarjeta.getAbsolutePath() + "/log";
+    }
+
+    public String getDirectorioAlm() {
+        return tarjeta.getAbsolutePath() + "/log/escaner/";
     }
 
     public String getDirectorioTc() {
@@ -81,7 +85,7 @@ public class Utilities {
      *
      * @return true si se pudo crear el directorio y el archivo, false si no es posible crearlos
      */
-    public boolean crearDirectorio(String lote) throws IOException {
+    private boolean crearDirectorio(String lote) throws IOException {
         File tc_dir = new File(tarjeta.getAbsolutePath() + "/log/escaner/tc/" + lote);
         File ti_dir = new File(tarjeta.getAbsolutePath() + "/log/escaner/ti/" + lote);
         String filename = "items.csv";
@@ -173,6 +177,7 @@ public class Utilities {
                     return false;
                 } finally {
                     try {
+                        assert writer3 != null;
                         writer3.close();
                     } catch (Exception ee) {
                         ee.printStackTrace();
@@ -218,6 +223,7 @@ public class Utilities {
                 return false;
         } finally {
             try {
+                assert csvReader != null;
                 csvReader.close();
             }
             catch(Exception ee) {
@@ -296,7 +302,8 @@ public class Utilities {
         String[] code = {getFecha(), tarima.getCodigocompleto(), tarima.getLote(), tarima.getCantCajas(),
                 "", tarima.getModelo(), tarima.getColor(),tarima.getCalidad(), tarima.getTamaño(),
                 tarima.getFormato(), tarima.getDec(), tarima.getTono(),tarima.getCalibre()};
-        String[] header = {"Fecha", "Codigo Interno", "Lote", "Cantidad cajas", "", "Modelo", "Color", "Calidad", "Tamaño", "Formato", "Dec", "Tono", "Calibre"};
+        String[] header = {"Fecha", "Codigo Interno", "Lote", "Cantidad cajas", "", "Modelo",
+                "Color", "Calidad", "Tamaño", "Formato", "Dec", "Tono", "Calibre"};
         //Verificar que fue posible separar las cadenas y obtener los codigos
         if(code!=null) {
             //verificar si fue posible guardar en el csv

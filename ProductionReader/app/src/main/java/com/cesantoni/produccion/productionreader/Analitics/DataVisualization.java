@@ -80,6 +80,11 @@ public class DataVisualization extends ListActivity {
     }
 
     private void verArchivoDirectorio(String rutaDirectorio) {
+        if (rutaDirectorio.equals(u.getDirectorioRaiz())) {
+
+            rutaDirectorio = u.getDirectorioAlm();
+            Toast.makeText(this, "Por favor permanecer en esta carpeta", Toast.LENGTH_SHORT).show();
+        }
         carpetaActual.setText("Estas en: " + rutaDirectorio);
         List<String> listaNombresArchivos = new ArrayList<>();
         listaRutasArchivos = new ArrayList<>();
@@ -88,11 +93,11 @@ public class DataVisualization extends ListActivity {
 
         int x = 0;
 
-        if(!rutaDirectorio.equals(directorioRaiz)) {
+        //if(!rutaDirectorio.equals(directorioRaiz)) {
             listaNombresArchivos.add("../");
             listaRutasArchivos.add(directorioActual.getParent());
             x = 1;
-        }
+        //}
 
         for (File archivo : listaArchivos) {
             listaRutasArchivos.add(archivo.getPath());
@@ -135,13 +140,14 @@ public class DataVisualization extends ListActivity {
         builder.setMessage("¿Qué desea hacer con el archivo?");
         builder.setCancelable(false);
         final TextView txt = (TextView)findViewById(R.id.txt_visualizacion);
-        builder.setPositiveButton("Leer", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                u.leerCsv(txt, tarima_completa, archivo);
+                //u.leerCsv(txt, tarima_completa, archivo);
+                finish();
             }
         });
-        builder.setNegativeButton("Enviar mail", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Enviar mail", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Intent.ACTION_SEND);
