@@ -32,27 +32,19 @@ import java.util.ArrayList;
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
-            // 1. Create inflater
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-            // 2. Get rowView from inflater
 
             View rowView = null;
             if(!modelsArrayList.get(position).isGroupHeader()){
                 rowView = inflater.inflate(R.layout.item_list_files, parent, false);
 
-                // 3. Get icon,title & counter views from the rowView
                 ImageView imgView = (ImageView) rowView.findViewById(R.id.item_icon);
                 TextView titleView = (TextView) rowView.findViewById(R.id.item_title);
 
-                // 4. Set the text for textView
                 imgView.setImageResource(modelsArrayList.get(position).getIcon());
                 titleView.setText(modelsArrayList.get(position).getTitle());
             }
-
-            // 5. retrn rowView
             return rowView;
         }
     }

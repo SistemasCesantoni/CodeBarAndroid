@@ -19,6 +19,7 @@ public class Tarima implements Serializable {
     private String calibre;
     private String cantCajas;
     private String lote;
+    private String metrosPorTarima;
     private boolean tarima_completa;
 
     public Tarima() {
@@ -110,6 +111,14 @@ public class Tarima implements Serializable {
 
     public void setLote(String lote) {
         this.lote = lote;
+    }
+
+    public String getMetrosPorTarima() {
+        return metrosPorTarima;
+    }
+
+    public void setMetrosPorTarima(String metrosPorTarima) {
+        this.metrosPorTarima = metrosPorTarima;
     }
 
     public boolean isTarima_completa() {

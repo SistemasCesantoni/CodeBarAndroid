@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Juan Antonio on 17/03/2017.
@@ -200,11 +201,6 @@ public class Utilities {
     public boolean leerCsv(TextView tx, boolean tarima_completa, File archivo) {
         CSVReader csvReader = null; //instancia para el lector de csv
         try {
-            //crearDirectorio();
-            //instanciar el lector, enviando el archivo ya creado, separado por comas, identificado con "" y comenzando desde la linea 1
-            //if(tarima_completa)
-            //   csvReader = new CSVReader(new FileReader(file_tc), ',');
-            //else
             csvReader = new CSVReader(new FileReader(archivo), ',');
             String[] itemDetails; //para guardar los datos leidos del csv
             String res = ""; //para formatear la salida en un textview
@@ -216,11 +212,11 @@ public class Utilities {
             }
             //mostrar el resultado
             tx.setText(res);
-                return true;
+            return true;
         }
         catch(Exception ee) {
             ee.printStackTrace();
-                return false;
+            return false;
         } finally {
             try {
                 assert csvReader != null;
@@ -248,6 +244,17 @@ public class Utilities {
         }
     }
 
+    public String getHora() {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
+
+            return dateFormat.format(new Date());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public Tarima crearTarima(String codigoInterno, String lote) {
         separarContenido(codigoInterno);
 
@@ -263,7 +270,7 @@ public class Utilities {
 
         return tarima;
     }
-    
+
     /**
      * Separar el codigo interno en claves individuales.
      *
@@ -284,11 +291,7 @@ public class Utilities {
                 formato += codigoInterno.charAt(i);
             } else if (i >= 10 && i < 13) {
                 dec += codigoInterno.charAt(i);
-            } /*else if (i >= 13 && i < 15) {
-                tono += codigoInterno.charAt(i);
-            } else {
-                calibre += codigoInterno.charAt(i);
-            }*/
+            }
         }
     }
 
@@ -299,10 +302,10 @@ public class Utilities {
 
     public String guardarDatos(Tarima tarima) {
         String message;
-        String[] code = {getFecha(), tarima.getCodigocompleto(), tarima.getLote(), tarima.getCantCajas(),
-                "", tarima.getModelo(), tarima.getColor(),tarima.getCalidad(), tarima.getTamaño(),
+        String[] code = {getFecha(), getHora(), tarima.getCodigocompleto(), tarima.getLote(), tarima.getCantCajas(),
+                tarima.getMetrosPorTarima(), tarima.getModelo(), tarima.getColor(),tarima.getCalidad(), tarima.getTamaño(),
                 tarima.getFormato(), tarima.getDec(), tarima.getTono(),tarima.getCalibre()};
-        String[] header = {"Fecha", "Codigo Interno", "Lote", "Cantidad cajas", "", "Modelo",
+        String[] header = {"Fecha", "Hora", "Codigo Interno", "Lote", "Cantidad cajas", "Metros Por Tarima", "Modelo",
                 "Color", "Calidad", "Tamaño", "Formato", "Dec", "Tono", "Calibre"};
         //Verificar que fue posible separar las cadenas y obtener los codigos
         if(code!=null) {
@@ -317,5 +320,13 @@ public class Utilities {
         }
         return message;
     }
+
+    public String getMetroPT(String cant_cajas, String metrosPorCaja) {
+        double cajasPT = Double.parseDouble(cant_cajas);
+        double metrosPC = Double.parseDouble(metrosPorCaja);
+        Double metrosPT = cajasPT*metrosPC;
+        return metrosPT.toString();
+    }
+
 
 }

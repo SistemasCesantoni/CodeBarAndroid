@@ -106,12 +106,11 @@ public class DataVisualization extends ListActivity {
 
         int x = 0;
 
-        //if(!rutaDirectorio.equals(directorioRaiz)) {
-            listaNombresArchivos.add("../");
-            listaRutasArchivos.add(directorioActual.getParent());
-            listaArchivosIco.add(new ModeloListaArchivos(R.drawable.back_ico,"../"));
-            x = 1;
-        //}
+        listaNombresArchivos.add("../");
+        listaRutasArchivos.add(directorioActual.getParent());
+        listaArchivosIco.add(new ModeloListaArchivos(R.drawable.back_ico,"../"));
+        x = 1;
+
 
         for (File archivo : listaArchivos) {
             listaRutasArchivos.add(archivo.getPath());
@@ -139,9 +138,6 @@ public class DataVisualization extends ListActivity {
         AdapterArchivos adapter = new AdapterArchivos(this, listaArchivosIco);
 
         setListAdapter(adapter);
-        /*ArrayAdapter<String> adaptador = new ArrayAdapter<>
-                (this, R.layout.text_view_lista_archivos, listaNombresArchivos);*/
-        //setListAdapter(adapter);
     }
 
     @Override

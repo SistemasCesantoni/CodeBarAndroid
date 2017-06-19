@@ -275,20 +275,20 @@ public class ContinuousCaptureActivity extends Activity
 
                @Override
                public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(isChecked) {
-                    cantCajas.setEnabled(true);
-                    tar.setTarima_completa(false);
-                } else {
-                    cantCajas.setEnabled(false);
-                    tar.setTarima_completa(true);
-                }
+                   if(isChecked) {
+                       cantCajas.setEnabled(true);
+                       tar.setTarima_completa(false);
+                   } else {
+                       cantCajas.setEnabled(false);
+                       tar.setTarima_completa(true);
+                   }
                }
            }
         );
 
+        final String [] presentacion = presentaciones.get(tar.getFormato()).split("/");
         if (tar.isTarima_completa()) {
-            String cant_cajas = presentaciones.get(tar.getFormato());
-            cantCajas.setText(cant_cajas);
+            cantCajas.setText(presentacion[1]);
             check_cajas.setChecked(false);
         } else {
             check_cajas.setChecked(true);
@@ -297,35 +297,46 @@ public class ContinuousCaptureActivity extends Activity
         builder.setView(dialogView)
                 .setPositiveButton(R.string.btn_guardar_cajas, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        onPause();
-
-                        String cant_cajas_final = cantCajas.getText().toString();
-                        if (!cant_cajas_final.isEmpty()) {
-                            final Tono tono_sel = (Tono) spinnerTonos.getSelectedItem();
-                            final Calibre cal_sel = (Calibre) spinnerCalibres.getSelectedItem();
-
-                            tar.setCantCajas(cant_cajas_final);
-                            tar.setTono(tono_sel.getKey());
-                            tar.setCalibre(cal_sel.getKey());
-
-                            String message = u.guardarDatos(tar);
-                            guardadoCompleto(message);
-                            dialog.dismiss();
-                        }
-                    }
+                    public void onClick(DialogInterface dialog, int id) { }
                 })
                 .setNegativeButton(R.string.btn_cancelar_cajas, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent i = new Intent(ContinuousCaptureActivity.this, ContinuousCaptureActivity.class)
+                        Intent i = new Intent(ContinuousCaptureActivity.this,
+                                ContinuousCaptureActivity.class)
                                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(i);
                         finish();
                     }
                 });
+
         builder.setTitle("Ingresa Cant. Cajas");
-        builder.create();
-        builder.show();
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPause();
+                String cant_cajas_final = cantCajas.getText().toString();
+                if (!cant_cajas_final.isEmpty()) {
+                    final Tono tono_sel = (Tono) spinnerTonos.getSelectedItem();
+                    final Calibre cal_sel = (Calibre) spinnerCalibres.getSelectedItem();
+
+                    tar.setCantCajas(cant_cajas_final);
+                    tar.setMetrosPorTarima(u.getMetroPT(cant_cajas_final, presentacion[0]));
+                    tar.setTono(tono_sel.getKey());
+                    tar.setCalibre(cal_sel.getKey());
+
+                    String message = u.guardarDatos(tar);
+                    guardadoCompleto(message);
+                    dialog.dismiss();
+                } else {
+                    cantCajas.requestFocus();
+                    Toast.makeText(ContinuousCaptureActivity.this,
+                            "Por favor ingresa la cantidad de cajas",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
     }
 

@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">ProductionReader</string>
-    <string name="btn_escaner">Escanear</string>
-    <string name="btn_registro">Ver Registro</string>
-    <string name="btn_registro_ti">Ver Registro TI</string>
+    <string name="app_name">Lector Producción</string>
+    <string name="btn_escaner">Escaner</string>
+    <string name="btn_registro">Registro Tarimas</string>
+    <string name="btn_registro_ti">Registro Restos</string>
 
     <string name="scan_barcode">Escaner Codigo</string>
     <string name="turn_on_flashlight">Encender Flash</string>
@@ -19,5 +19,7 @@
 
     <string name="salir_lista">Volver al Menú</string>
 
+    <string name="txtv_tonos">Tono</string>
+    <string name="txtv_calibres">Calibre</string>
 
 </resources>

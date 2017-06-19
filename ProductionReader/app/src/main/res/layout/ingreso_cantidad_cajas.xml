@@ -17,7 +17,7 @@
 
         <EditText
             android:id="@+id/txt_cant_cajas"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -35,7 +35,7 @@
             android:id="@+id/text_tonos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tonos" />
+            android:text="@string/txtv_tonos" />
 
         <Spinner
             android:id="@+id/spinner_tonos"
@@ -51,7 +51,7 @@
             android:id="@+id/text_calibres"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Calibres" />
+            android:text="@string/txtv_calibres" />
         <Spinner
             android:id="@+id/spinner_calibres"
             android:layout_width="match_parent"
